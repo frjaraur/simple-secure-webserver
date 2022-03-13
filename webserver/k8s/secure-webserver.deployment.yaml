@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secure-webserver
+spec:
+  selector:
+    matchLabels:
+      app: webserver
+  template:
+    metadata:
+      labels:
+        app: webserver
+    spec:
+      
+      containers:
+      - name: webserver
+        image: frjaraur/simple-secure-webserver:webserver
+        imagePullPolicy: Always
+        securityContext:
+          readOnlyRootFilesystem: true
+        volumeMounts:
+          - name: run
+            mountPath: /run
+          - name: log
+            mountPath:  /var/log/nginx
+          - name: cache
+            mountPath:  /var/cache/nginx
+          - name: tmp
+            mountPath:  /var/lib/nginx/tmp
+          - name: auth
+            mountPath:  /etc/nginx/auth
+        ports:
+          - name: http
+            containerPort: 1080
+      volumes:
+        - name: run
+          emptyDir: {}           
+        - name: log
+          emptyDir: {}
+        - name: cache
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
+        - name: auth
+          secret:
+            secretName: secure-webserver-htpasswd

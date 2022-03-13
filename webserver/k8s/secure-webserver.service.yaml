@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  name: secure-webserver
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 1080
+  selector:
+    app: webserver
+status:
+  loadBalancer: {}
